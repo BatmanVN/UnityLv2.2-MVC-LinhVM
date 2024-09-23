@@ -90,9 +90,10 @@ public class CardManager : Singleton<CardManager>
         }
         PlayAudio();
     }
-    private void EnableFailBar()
+    private IEnumerator EnableFailBar()
     {
-        loseBanner.SetActive(Index <= -3);
+        yield return new WaitForSeconds(1f);
+        loseBanner.SetActive(Index < -3);
     }
     private void EnableSuccessbar()
     {
@@ -135,7 +136,7 @@ public class CardManager : Singleton<CardManager>
     private void Update()
     {
         ResetCard();
-        EnableFailBar();
+       StartCoroutine(EnableFailBar());
         EnableSuccessbar();
     }
 }

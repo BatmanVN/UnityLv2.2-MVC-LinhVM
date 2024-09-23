@@ -21,6 +21,10 @@ public class Card : MonoBehaviour
     
     public string NameCard { get => nameCard; }
 
+    private void Awake()
+    {
+        
+    }
     private void Start()
     {
         ShowCard();
@@ -35,6 +39,7 @@ public class Card : MonoBehaviour
     {
         cardAnim.SetTrigger("swap");
         onSwap?.Invoke();
+        ChangeSprite();
     }
 
     public void EnableFlip()
@@ -48,7 +53,6 @@ public class Card : MonoBehaviour
     private void FlipCard()
     {
         cardAnim.SetBool(flipParaname, true);
-        ChangeSprite();
         SetTime();
     }
     private void ChangeSprite()
