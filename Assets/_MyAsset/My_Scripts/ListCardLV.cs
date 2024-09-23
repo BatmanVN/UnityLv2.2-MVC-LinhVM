@@ -9,6 +9,7 @@ public class ListCardLV : MonoBehaviour
     [SerializeField] private List<Sprite> sprites;
     [SerializeField] private List<Image> images;
     [SerializeField] private GameObject winBar;
+    [SerializeField] private List<AudioSource> audios;
     bool allCardNull;
     private void Start()
     {
@@ -24,7 +25,6 @@ public class ListCardLV : MonoBehaviour
                 if (card != null)
                 {
                     allCardNull = false;
-                    Debug.Log("CHECK");
                 }
             }
             if (allCardNull)
@@ -37,15 +37,24 @@ public class ListCardLV : MonoBehaviour
     {
         foreach (Image image in images)
         {
-            
             if (sprites.Count <= 0) return;
             int index = Random.Range(0, sprites.Count);
             image.sprite = sprites[index];
             sprites.RemoveAt(index);
         }
     }
-    private void Update()
+    
+    public void UpdateSound()
     {
-
+        for (int i = 0; i < cards.Count; i++)
+        {
+            for (int j = 0; j < audios.Count; j++)
+            {
+                if (cards[i].NameCard == audios[j].name && audios[j] != null)
+                {
+                    cards[i].CardSound = audios[j];
+                }
+            }
+        }
     }
 }

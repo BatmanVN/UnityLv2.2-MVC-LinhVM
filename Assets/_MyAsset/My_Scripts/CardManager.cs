@@ -7,8 +7,10 @@ using UnityEngine.UI;
 public class CardManager : Singleton<CardManager>
 {
     [SerializeField] private List<Card> cardAdd = null;
+    [SerializeField] private List<Card> cards;
     [SerializeField] private AudioSource[] audios;
     [SerializeField] private GameObject loseBanner;
+    [SerializeField] private GameObject[] vfxStatus;
     [SerializeField] private float timeDestroy;
     [SerializeField] private float timeClear;
     [SerializeField] private float time;
@@ -32,7 +34,13 @@ public class CardManager : Singleton<CardManager>
     }
     private void Start()
     {
-        
+        //StartCoroutine(CheckIndex());
+        //while (time > 0)
+        //{
+        //    time -= Time.deltaTime;
+        //    if(time<=0)
+        //        ResetCard();
+        //}
     }
     public void AddCard(Card card)
     {
@@ -40,12 +48,12 @@ public class CardManager : Singleton<CardManager>
             return;
         if (cardAdd.Count < 2)
         {
-            time = 4f; //set up again time everytime add a new card
+            time = 3f;
             cardAdd.Add(card);
         }
         if (cardAdd.Count == 2)
         {
-            DisableAllCard(); //Every time List card Selected = 2 will disable all button
+            DisableAllCard();
             StartCoroutine(CheckDelay());
         }
     }
@@ -65,9 +73,9 @@ public class CardManager : Singleton<CardManager>
     }
     private IEnumerator CheckDelay()
     {
-        CheckCard(); // check card
-        yield return new WaitForSeconds(timeClear); // then wait timeClear setup follow CheckCard
-        EnableAllCard(); //Enable all button if Finsihed check card
+        CheckCard();
+        yield return new WaitForSeconds(timeClear);
+        EnableAllCard();
     }
     private void CheckCard()
     {
@@ -77,18 +85,30 @@ public class CardManager : Singleton<CardManager>
             {
                 cardAdd[0].Disable(timeDestroy);
                 cardAdd[1].Disable(timeDestroy);
-                Invoke(nameof(ClearListCard), timeClear); // if 2card same timeclear = setup(1,1.2,2s...)
+                vfxStatus[0].SetActive(true);
+                Invoke(nameof(DisVFXSucces), 1f);
+                Invoke(nameof(ClearListCard), timeClear);
                 issucced = true;
             }
             if (cardAdd[0].NameCard != cardAdd[1].NameCard)
             {
-                timeClear = 4f;  // if 2card diff timeclear = time disableSprite in class card
+                timeClear = 4f;
                 Invoke(nameof(ClearListCard), timeClear);
+                vfxStatus[1].SetActive(true);
+                Invoke(nameof(DisplayVFXFail), 1f);
                 Index -= 1;
                 issucced = false;
             }
         }
         PlayAudio();
+    }
+    private void DisVFXSucces()
+    {
+        vfxStatus[0].SetActive(false);
+    }
+    private void DisplayVFXFail()
+    {
+        vfxStatus[1].SetActive(false);
     }
     private IEnumerator EnableFailBar()
     {
@@ -118,7 +138,9 @@ public class CardManager : Singleton<CardManager>
     {
         cardAdd.Clear();
     }
-    private void ResetCard() // for flip again card if player just click 1 card and time Disable in class card <=0
+
+    // for flip again card if player just click 1 card and time Disable in class card <=0
+    private void ResetCard()
     {
         if (cardAdd.Count == 1)
         {
@@ -136,7 +158,7 @@ public class CardManager : Singleton<CardManager>
     private void Update()
     {
         ResetCard();
-       StartCoroutine(EnableFailBar());
+        StartCoroutine(EnableFailBar());
         EnableSuccessbar();
     }
 }
